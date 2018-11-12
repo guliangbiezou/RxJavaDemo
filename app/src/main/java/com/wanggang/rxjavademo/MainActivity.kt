@@ -11,9 +11,12 @@ import android.widget.TextView
 import com.wanggang.rxjavademo.util.LogUtil
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.concurrent.TimeUnit
+import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
 
@@ -71,32 +74,36 @@ class MainActivity : AppCompatActivity() {
             R.id.bt_create -> create()
             R.id.bt_delay -> delay()
             R.id.bt_do -> testDo()
+            R.id.bt_onErrorResume -> onErrorResumeNext()
         }
     }
 
-    private fun testDo() {
-        observable.doOnEach {
-            printExecute("doOnEach",it)
-        }.doOnNext {
-            printExecute("doOnNext",it)
-        }.doOnError {
-            printExecute("doOnError",it)
-        }.doAfterNext {
-            printExecute("doAfterNext",it)
-        }.doOnTerminate {
-            printExecute("doOnTerminate")
-        }.doAfterTerminate {
-            printExecute("doAfterTerminate")
-        }.doOnComplete {
-            printExecute("doOnComplete")
-        }.doFinally {
-            printExecute("doFinally")
-        }.subscribe(observer)
+    private fun onErrorResumeNext() {
+        observable.onExceptionResumeNext(ObservableFactory.observableNNNNC).subscribe(observer)
+    }
 
+    private fun testDo() {
+            observable.doOnEach {
+                printExecute("doOnEach",it)
+            }.doOnNext {
+                printExecute("doOnNext",it)
+            }.doOnError {
+                printExecute("doOnError",it)
+            }.doAfterNext {
+                printExecute("doAfterNext",it)
+            }.doOnTerminate {
+                printExecute("doOnTerminate")
+            }.doAfterTerminate {
+                printExecute("doAfterTerminate")
+            }.doOnComplete {
+                printExecute("doOnComplete")
+            }.doFinally {
+                printExecute("doFinally")
+            }.subscribe(observer)
     }
 
     private fun create() {
-        observable.subscribe(observer)
+        observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer)
     }
 
     private fun delay() {

@@ -3,6 +3,7 @@ package com.wanggang.rxjavademo
 import com.wanggang.rxjavademo.util.LogUtil
 import io.reactivex.Observable
 import io.reactivex.Observer
+import java.lang.Exception
 
 fun printExecute(funName:String,param: Any? = null) {
 //    LogUtil.e( "observer $funName paramClass = ${if (param != null) param::class.java.name else null} param = $param threadName = ${Thread.currentThread().name} time = ${System.currentTimeMillis()}")
@@ -40,7 +41,11 @@ object ObservableFactory {
             LogUtil.e(TAG,"observableNNNNC subscribeActual start threadName = ${Thread.currentThread().name} time = ${System.currentTimeMillis()}")
             observer?.onNext(1)
             observer?.onNext(2)
-            observer?.onError(Throwable())
+            try {
+                throw Exception("出错了")
+            } catch (e:Exception) {
+                e.printStackTrace()
+            }
             observer?.onNext(3)
             observer?.onNext(4)
             observer?.onComplete()
