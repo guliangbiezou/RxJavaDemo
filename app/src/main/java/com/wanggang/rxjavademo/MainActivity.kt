@@ -1,22 +1,24 @@
 package com.wanggang.rxjavademo
 
+import android.content.Context
+import android.hardware.display.DisplayManager
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
 import android.widget.PopupWindow
 import android.widget.SimpleAdapter
 import android.widget.TextView
-import com.wanggang.rxjavademo.util.LogUtil
+import com.wanggang.rxjavademo.util.SerialPortUtils
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.concurrent.TimeUnit
-import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
 
@@ -64,6 +66,43 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        initSecondWindow()
+    }
+
+    val handler = Handler()
+    private fun initSecondWindow() {
+        val displayManager: DisplayManager = getSystemService(Context.DISPLAY_SERVICE) as DisplayManager
+        val displays = displayManager.displays
+        if (displays.size > 1) {
+            val secondWindow = SecondWindow(this,displays[displays.size - 1])
+            secondWindow.show()
+        }
+
+    }
+
+    private fun serial() {
+        val serialPortUtils = SerialPortUtils()
+        serialPortUtils.openSerialPort()
+
+        serialPortUtils.setOnDataReceiveListener (object :SerialPortUtils.OnDataReceiveListener {
+            var mBuffer:ByteArray = byteArrayOf()
+            override fun onDataReceive(buffer: ByteArray?, size: Int) {
+                Log.d(TAG, "进入数据监听事件中。。。" + String(buffer!!))
+                //
+                //在线程中直接操作UI会报异常：ViewRootImpl$CalledFromWrongThreadException
+                //解决方法：handler
+                //
+                mBuffer = buffer
+                handler.post(runnable)
+            }
+
+            //开线程更新UI
+            val runnable = Runnable {
+                bt_check_observable.text = "size： ${mBuffer.size}数据监听：${mBuffer}"
+            }
+
+
+        })
     }
 
     fun mainClick(v: View) {
@@ -71,7 +110,7 @@ class MainActivity : AppCompatActivity() {
             R.id.bt_check_observable -> {
                 popupWindow.showAsDropDown(bt_check_observable)
             }
-            R.id.bt_create -> create()
+            R.id.bt_create -> serial()
             R.id.bt_delay -> delay()
             R.id.bt_do -> testDo()
             R.id.bt_onErrorResume -> onErrorResumeNext()

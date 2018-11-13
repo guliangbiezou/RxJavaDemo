@@ -7,7 +7,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:name="android_serialport_api.sample.Application">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -15,6 +16,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:label="@string/app_name"
+            android:name="android_serialport_api.sample.MainMenu" >
+            <!--<intent-filter >-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
+        <activity android:name="android_serialport_api.sample.SerialPortPreferences" >
+        </activity>
+        <activity android:name="android_serialport_api.sample.ConsoleActivity" >
+        </activity>
+        <activity android:name="android_serialport_api.sample.LoopbackActivity" >
+        </activity>
+        <activity android:name="android_serialport_api.sample.Sending01010101Activity"></activity>
     </application>
 
 </manifest>
