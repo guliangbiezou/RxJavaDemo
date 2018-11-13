@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
             list,
             android.R.layout.simple_list_item_1, arrayOf("observableName"),
             intArrayOf(android.R.id.text1))
-        (pop.contentView as ListView).setOnItemClickListener { adapterView, view, i, l ->
+        (pop.contentView as ListView).setOnItemClickListener { _, view, _, _ ->
             bt_check_observable.text = (view as TextView).text
             observable = ObservableFactory.getObservableByName(bt_check_observable.text.toString())
             pop.dismiss()
