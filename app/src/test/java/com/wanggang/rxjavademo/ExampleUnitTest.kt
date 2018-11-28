@@ -5,6 +5,8 @@ import com.wanggang.rxjavademo.kotlinExt.ObserverKTX
 import org.junit.Test
 
 import org.junit.Assert.*
+import kotlin.random.Random
+import kotlin.random.asJavaRandom
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -14,7 +16,23 @@ import org.junit.Assert.*
 class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+        for (i in 0..1000) {
+            println(randomNums())
+        }
+    }
+
+    private fun randomNums():ArrayList<Int> {
+        val arr = arrayListOf<Int>()
+        for (i in 0 until 5) {
+            arr.add(Random.nextInt(10))
+        }
+        return arr
+    }
+
+
+
+
+    private fun test() {
         val observable = object : ObservableKTX<Int>() {
             override fun subscribeAtual(observerKTX: ObserverKTX<Int>) {
                 observerKTX.onNext(1)
@@ -41,7 +59,7 @@ class ExampleUnitTest {
             }
         }
         observable.doOnEach {
-                println("doOnEach time = ${System.currentTimeMillis()}")
+            println("doOnEach time = ${System.currentTimeMillis()}")
         }.doOnNext {
             println("doOnNext time = ${System.currentTimeMillis()}")
         }.subscribe(observer)
