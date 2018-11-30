@@ -64,20 +64,34 @@ object ObservableFactory {
         }
     }
 
-    val observabaleNNTNNC: Observable<Int> = object: Observable<Int>() {
-        override fun subscribeActual(observer: Observer<in Int>?) {
-            try {
-                observer?.onNext(9)
-                observer?.onNext(10)
-                throw Throwable()
-                observer?.onNext(11)
-                observer?.onNext(12)
-                observer?.onComplete()
-            } catch (e: Throwable) {
-                observer?.onError(e)
-            }
-        }
+//    val observabaleNNTNNC: Observable<Int> = object: Observable<Int>() {
+//        override fun subscribeActual(observer: Observer<in Int>?) {
+//            try {
+//                observer?.onNext(9)
+//                observer?.onNext(10)
+//                throw Throwable()
+////                observer?.onError(Throwable())
+//                observer?.onNext(11)
+//                observer?.onNext(12)
+//                observer?.onComplete()
+//            } catch (e: Throwable) {
+//                observer?.onError(e)
+//            }
+//        }
+//
+//    }
+    var time = 0
+val observabaleNNTNNC: Observable<Int> = Observable.create {
 
+    try {
+        it.onNext(9)
+        it.onNext(10)
+//        throw Exception()
+        it.onNext(11)
+        it.onComplete()
+    } catch (e: Exception) {
+        it.onError(e)
     }
+}
 
 }
